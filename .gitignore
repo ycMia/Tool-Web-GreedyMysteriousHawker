@@ -1,0 +1,5 @@
+runs/*.sh
+runs/*.bat
+
+*.exe
+*.o
