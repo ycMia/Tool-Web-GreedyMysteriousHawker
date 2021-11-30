@@ -1,5 +1,7 @@
 runs/*.sh
 runs/*.bat
 
+*.csv
+
 *.exe
 *.o
