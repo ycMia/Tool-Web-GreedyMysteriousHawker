@@ -1,6 +1,12 @@
 runs/*.sh
 runs/*.bat
 
+run/*.sh
+run/*.bat
+
+*.sh
+*.bat
+
 test/
 
 *.csv
