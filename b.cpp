@@ -3,6 +3,7 @@
 #include "MethineLoader.h"
 #include "WebPainting.h"
 #include "CsvReader.h"
+#include "MilkCar.h"
 
 using namespace std;
 int main()
@@ -13,9 +14,30 @@ int main()
 	Html_Machine * hm = new Html_Machine();
 	
 	hm->initPage();
+	
+	//TODO: this should be a class doing the outputing csv
+	MilkCar * mc = new MilkCar();
+	mc->Milk_POST();
+	if(mc->AskForDrink("in")!="" || mc->AskForDrink("out")!="")
+	{
+		ofstream * pofs = new ofstream;
+		pofs->open("default.csv",ios::out | ios::app);
+		
+		if(mc->AskForDrink("in")!="")
+		{
+			*pofs<<","<<atoi(mc->AskForDrink("in").c_str())<<","<<mc->AskForDrink("comment")<<endl;
+		}
+		else
+		{
+			*pofs<<atoi(mc->AskForDrink("in").c_str())<<","<<","<<mc->AskForDrink("comment")<<endl;
+		}
+		pofs->close();
+	}
+	
 	hm->html();
 	hm->body();
 	
+	//TODO: this should be a class doing the table calculating
 	tsp->table();
 	{
 		bool * trFlag = new bool;

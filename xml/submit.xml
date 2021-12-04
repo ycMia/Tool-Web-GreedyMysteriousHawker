@@ -1,4 +1,12 @@
 <form method="Post" action="csv_share.cgi">
-	<input type="text" value="">
-	<input type="submit" value="launch">
+	<input type="text" name="in" value="" style="margin:0.1em 0.1em 0.1em 0.1em; width: 5em;">
+    <input type="text" name="out" value="" style="margin:0.1em 0.1em 0.1em 0.1em; width: 5em;">
+    <br>
+    <input type="text" name="comment" value="" style="margin:0.1em 0.1em 0.1em 0.1em; width: 10em">
+	<br>
+	<input type="submit" value="launch" style="
+    margin: 0.2em 0.2em 0.2em 0.2em;
+    width: 10em;
+    height: 4em;
+    ">
 </form>

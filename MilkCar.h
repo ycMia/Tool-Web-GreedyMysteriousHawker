@@ -55,7 +55,19 @@ public:
                 }
 			}
 		}
+		
+		_milkCansStorage = ret;
 		return ret;
+	}
+	
+	string AskForDrink(const char * flavor)
+	{
+		return _milkCansStorage[flavor];
+	}
+
+	string AskForDrink(string flavor)
+	{
+		return _milkCansStorage[flavor.c_str()];
 	}
 	
 	void Show_map(map<string,string> mp)
@@ -68,6 +80,8 @@ public:
     			cout<<iter->first<<" : "<<"///empty///"<<"</br>"<<endl;
         }
 	}
+private:
+	map<string,string> _milkCansStorage;
 };
 
 
