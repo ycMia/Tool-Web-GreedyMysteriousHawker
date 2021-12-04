@@ -23,13 +23,13 @@ public:
 	
 	string Razor2Linux(string str)
 	{
-		for(int i = 0 i<str.size();++i)
+		for(int i = 0; i<str.size();++i)
 			if(str[i]=='\\') str[i] = '/';
 	}
 	
 	string Razor2Windows(string str)
 	{
-		for(int i = 0 i<str.size();++i)
+		for(int i = 0; i<str.size();++i)
 			if(str[i]=='/') str[i] = '\\';
 	}
 	
