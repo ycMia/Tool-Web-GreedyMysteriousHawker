@@ -17,20 +17,37 @@ public:
 	void Specify(string fileName)
 	{
 		_ifs.open(fileName.c_str(),ios::in);
-		if(_ifs.peek()==EOF || _ifs.is_open()==false)
+		if(_ifs.is_open()==false)
 			_ifs.open(Razor2Linux(fileName).c_str(),ios::in);
 	}
+	
+	/*
+	int GetFileLength(ifstream &ifs)
+	{
+		streampos pos = ifs.tellg();
+		
+		ifs.seekg(0,ios::begin);
+		int length = ifs.tellg();
+		ifs.seekg(0,ios::end);
+		length = ifs.tellg() - length;
+		
+		ifs.seekg(0,pos);
+		return length;
+	}
+	*/
 	
 	string Razor2Linux(string str)
 	{
 		for(int i = 0; i<str.size();++i)
 			if(str[i]=='\\') str[i] = '/';
+		return str;
 	}
 	
 	string Razor2Windows(string str)
 	{
 		for(int i = 0; i<str.size();++i)
 			if(str[i]=='/') str[i] = '\\';
+		return str;
 	}
 	
 	string GetAmmo()

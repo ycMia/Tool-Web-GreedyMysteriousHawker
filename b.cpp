@@ -9,7 +9,7 @@ int main()
 {
 	CSV_reader * cr = new CSV_reader();
 	Table_Solid_Printer * tsp = new Table_Solid_Printer();
-	MethineLoader * ml = new MethineLoader("xml\\submit.xml");
+	MethineLoader * ml = new MethineLoader("xml/submit.xml");
 	Html_Machine * hm = new Html_Machine();
 	
 	hm->initPage();
