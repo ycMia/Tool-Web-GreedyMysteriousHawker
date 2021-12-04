@@ -18,10 +18,16 @@ public:
 	map<string,string> Milk_POST()
 	{
 		map<string,string> ret;
-		string name;
+        string name;
     	string value;
+        
+        char *content_length = getenv("CONTENT_LENGTH");
+        if(!content_length)
+            return ret;
 
-        int n = atoi(getenv("CONTENT_LENGTH"));
+        int n = atoi(content_length);
+        if(n==0) return ret;
+
 		bool conFlag = false;
 		for(int i = 0;i<n;i++)
 		{
@@ -72,6 +78,8 @@ public:
 	
 	void Show_map(map<string,string> mp)
 	{
+        if(mp.size()==0) return;
+    
 		for(map<string,string>::iterator iter = mp.begin();iter!=mp.end();iter++)
         {
             if(iter->second.size()>0)
@@ -83,5 +91,4 @@ public:
 private:
 	map<string,string> _milkCansStorage;
 };
-
 

@@ -16,8 +16,13 @@ int main()
 	hm->initPage();
 	
 	//TODO: this should be a class doing the outputing csv
-	MilkCar * mc = new MilkCar();
-	mc->Milk_POST();
+    
+     
+    cout<<"<!--"<<endl;
+    MilkCar * mc = new MilkCar();
+    mc->Show_map(mc->Milk_POST());
+    cout<<"-->"<<endl;
+	
 	if(mc->AskForDrink("in")!="" || mc->AskForDrink("out")!="")
 	{
 		ofstream * pofs = new ofstream;
@@ -29,7 +34,7 @@ int main()
 		}
 		else
 		{
-			*pofs<<atoi(mc->AskForDrink("in").c_str())<<","<<","<<mc->AskForDrink("comment")<<endl;
+			*pofs<<atoi(mc->AskForDrink("out").c_str())<<","<<","<<mc->AskForDrink("comment")<<endl;
 		}
 		pofs->close();
 	}
@@ -39,7 +44,8 @@ int main()
 	
 	//TODO: this should be a class doing the table calculating
 	tsp->table();
-	{
+	
+    {
 		bool * trFlag = new bool;
 		*trFlag = true;
 		for(int i = 0;i<1000;i++)

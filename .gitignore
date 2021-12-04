@@ -13,3 +13,5 @@ test/
 
 *.exe
 *.o
+
+*.swp
