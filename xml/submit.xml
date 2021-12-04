@@ -1,0 +1,4 @@
+<form method="Post" action="cgi-bin/csv_share.cgi">
+	<input type="text" value="">
+	<input type="submit" value="launch">
+</form>
