@@ -17,7 +17,7 @@ public:
 	
 	void initPage()
 	{
-		cout<<"Content-type:text/html"<<endl<<endl;
+		cout<<"Content-type:text/html"<<endl;
 	}
 	
 	void head()
