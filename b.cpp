@@ -9,11 +9,167 @@
 #define DEBUG
 
 #ifdef DEBUG
+const int verifySum = 100000;
+
 int main()
 {
+    CSV_reader * cr = new CSV_reader();
+	Table_Solid_Printer * tsp = new Table_Solid_Printer();
+	MethineLoader * ml = new MethineLoader("xml/submit.xml");
+    Html_Machine * hm = new Html_Machine();
 	CookieOperator * co = new CookieOperator();
-	cout<< co->GetVerifyFeature() <<endl;
+    GMTTimer * gt = new GMTTimer();
+
+    hm->initPage();
+    
+    char * cookie = getenv("HTTP_COOKIE");
+    
+    int cookieStatus = 0;
+    if(cookie)
+    {
+        if(co->GetVerifyFeature() != -1)
+        {
+            if(atoi(cookie)+co->GetVerifyFeature() == verifySum)
+            {
+                //all normal, allow submit data here
+                cookieStatus = 0;
+            }
+            else
+            {
+                //may submit the data twice
+                cookieStatus = 1;
+            }
+        }
+        else // I've lost the cookieFile
+        {
+            cookieStatus = 2;
+            /*
+            cout<<endl<<endl;
+            hm->html();
+            hm->body();
+            cout<<"<!--"<<cookie<<"-->";
+
+            hm->body();
+            hm->html();
+            return 0;
+            */
+        }
+    }
+    else
+    {
+        //the client do NOT have cookie
+        cookieStatus = 3;
+    }
+
+    int seed = (int)time(nullptr) + 15;
+    srand(seed);
+    int clientSession = (random() % verifySum);
+    int serverVerify = verifySum-clientSession;
+    cout<<co->GiveClientCookie_str(3600,clientSession);
+    co->SetServerCookie(serverVerify);
+
+    //end of http Head
+    cout<<endl<<endl;
+
+
+    switch(cookieStatus)
+    {
+        case 0:
+        {
+            // accept post data
+            cout<<"<!--"<<endl;
+            MilkCar * mc = new MilkCar();
+            mc->Show_map(mc->Milk_POST());
+            cout<<"-->"<<endl;
+            
+            if(mc->AskForDrink("in")!="" || mc->AskForDrink("out")!="")
+            {
+                ofstream * pofs = new ofstream;
+                pofs->open("default.csv",ios::out | ios::app);
+                
+                if(mc->AskForDrink("in")!="")
+                {
+                    *pofs<<","<<atoi(mc->AskForDrink("in").c_str())<<","<<mc->AskForDrink("comment")<<endl;
+                }
+                else
+                {
+                    *pofs<<atoi(mc->AskForDrink("out").c_str())<<","<<","<<mc->AskForDrink("comment")<<endl;
+                }
+                pofs->close();
+            }
+            // show normal Site then
+            break;
+        }
+        case 1:
+        case 2:
+        case 3:
+            // show normal Site
+            break;
+    }
+
+    hm->html();
+	hm->body();
 	
+	//TODO: this should be a class doing the table calculating
+	tsp->table();
+	
+    {
+		bool * trFlag = new bool;
+		*trFlag = true;
+		for(int i = 0;i<1000;i++)
+		{
+			pair<string,int> res = cr -> GetElement();
+			
+			if(res.second == -1 || res.second == 0)
+				break;
+			
+			if(*trFlag)
+			{
+				tsp->tr();
+				*trFlag = false;
+			}
+			
+			if(res.second == 1)
+			{
+				tsp->td();
+				if(res.first.size() == 0)
+					cout<<"&nbsp;";
+				else
+					cout<<res.first;
+				tsp->td();
+				continue;
+			}
+			else if(res.second == 2)
+			{
+				tsp->td();
+				if(res.first.size() == 0)
+					cout<<"&nbsp;";
+				else
+					cout<<res.first;
+				tsp->td();
+				tsp->tr();
+				*trFlag = true;
+				continue;
+			}
+			/*
+			cout<<setw(32)<<right
+				<<(res.first.size() == 0 ? "<<EMPTY>>" : res.first.c_str()) 
+				<<" -- ";
+			cout<<setw(32)<<left
+				<<(res.second==1 ? "Normal" : "Line\'s End")<<endl;
+			*/
+		}
+		delete trFlag;
+	}
+	tsp->table();
+	
+	string formStr = ml->GetAmmo();
+	for(int i=0;i<formStr.size();i++)
+		cout<<formStr[i];
+	hm->body();
+	hm->html();
+
+
 	return 0;
 }
 

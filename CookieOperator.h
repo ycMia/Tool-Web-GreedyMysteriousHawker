@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <stdlib.h>
 #include <ctime>
 
@@ -10,6 +11,19 @@
 #include "MilkCar.h"
 
 using namespace std;
+
+class GMTTimer
+{
+public:
+    GMTTimer();
+    ~GMTTimer();
+
+    char * GetTime_now();
+    char * GetTime(long); 
+private:
+    char * _destTime;
+    const int _timeStrSize = 32;
+};
 
 class CookieOperator
 {
@@ -49,7 +63,21 @@ public:
 		}
 		ifs.close();
 	}
-	
+    
+    int GetClientCookie()
+    {
+        return -1;
+    }
+    
+    void SetServerCookie(int serverVerify)
+    {
+        //danger Method! 
+        ofstream ofs;
+        ofs.open("cookie.save" , ios::out | ios::trunc);
+        ofs << serverVerify;
+        ofs.close();
+    }
+
 	/*
 	bool IHaveCookie() 
 	{
@@ -62,61 +90,63 @@ public:
 		return _verifyFeature;
 	}
 	
-	void GiveClientCookie(int expireTime) {}
+	string GiveClientCookie_str(int expireTime,int clientSession)
+    {
+        GMTTimer * gt = new GMTTimer();
+        stringstream ss;
+        string str;
+        ss << "Set-Cookie:session=" << clientSession<< ";expires=" << gt->GetTime(expireTime) << ";path=/cgi-bin/;domain=silcfunc.com;";
+        getline(ss,str);
+
+        return str;
+    }
+
 private:
 	bool _iHaveCookie; // = false
 	int _cookieFileLength = 0;
 	long long _verifyFeature = -1;
 };
 
-class GMTTimer
+GMTTimer::GMTTimer() 
 {
-public:
-	GMTTimer() 
-	{
-		_destTime = new char[_timeStrSize+1];
-	}
+    _destTime = new char[_timeStrSize+1];
+}
+
+GMTTimer::~GMTTimer()
+{
+    delete _destTime;
+}
+
+char * GMTTimer::GetTime_now()
+{
+    delete _destTime;
+    _destTime = new char[_timeStrSize+1];
+    
+    time_t now = time(nullptr);
+    tm* gmt = gmtime(&now);
+
+    // e.g.: Sat, 22 Aug 2015 11:48:50 GMT
+    //       5+   3+4+   5+   9+       3   = 29
+    const char* format = "%a, %d %b %Y %H:%M:%S GMT";
+    
+    strftime(_destTime,_timeStrSize,format,gmt);
+    return _destTime;
+}
 	
-	~GMTTimer()
-	{
-		delete _destTime;
-	}
-	
- 	char * GetTime_now()
-	{
-		delete _destTime;
-		_destTime = new char[_timeStrSize+1];
-		
-		time_t now = time(nullptr);
-		tm* gmt = gmtime(&now);
-		
-		// e.g.: Sat, 22 Aug 2015 11:48:50 GMT
-		//       5+   3+4+   5+   9+       3   = 29
-		const char* format = "%a, %d %b %Y %H:%M:%S GMT";
-		
-		strftime(_destTime,_timeStrSize,format,gmt);
-		return _destTime;
-	}
-	
-	char * GetTime(long offset)
-	{
-		delete _destTime;
-		_destTime = new char[_timeStrSize+1];
-		
-		time_t now = time(nullptr);
-		now += offset;
-		tm* gmt = gmtime(&now);
-		
-		// e.g.: Sat, 22 Aug 2015 11:48:50 GMT
-		//       5+   3+4+   5+   9+       3   = 29
-		const char* format = "%a, %d %b %Y %H:%M:%S GMT";
-		
-		strftime(_destTime,_timeStrSize,format,gmt);
-		return _destTime;
-	}
-	
-	
-private:
-	char * _destTime;
-	const int _timeStrSize = 32;
-};
+char * GMTTimer::GetTime(long offset)
+{
+    delete _destTime;
+    _destTime = new char[_timeStrSize+1];
+    
+    time_t now = time(nullptr);
+    now += offset;
+    tm* gmt = gmtime(&now);
+    
+    // e.g.: Sat, 22 Aug 2015 11:48:50 GMT
+    //       5+   3+4+   5+   9+       3   = 29
+    const char* format = "%a, %d %b %Y %H:%M:%S GMT";
+    
+    strftime(_destTime,_timeStrSize,format,gmt);
+    return _destTime;
+}
+
