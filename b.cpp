@@ -4,7 +4,22 @@
 #include "WebPainting.h"
 #include "CsvReader.h"
 #include "MilkCar.h"
+#include "CookieOperator.h"
 
+#define DEBUG
+
+#ifdef DEBUG
+int main()
+{
+	CookieOperator * co = new CookieOperator();
+	cout<< co->GetVerifyFeature() <<endl;
+	
+	return 0;
+}
+
+#endif
+
+#ifndef DEBUG
 using namespace std;
 int main()
 {
@@ -12,8 +27,19 @@ int main()
 	Table_Solid_Printer * tsp = new Table_Solid_Printer();
 	MethineLoader * ml = new MethineLoader("xml/submit.xml");
 	Html_Machine * hm = new Html_Machine();
+	CookieOperator * co = new CookieOperator();
 	
 	hm->initPage();
+	
+	/*
+	if(co->IHaveCookie())
+	{
+		CheckClientCookie()
+	}
+	else if(
+	*/
+	
+	cout<<endl<<endl;
 	
 	//TODO: this should be a class doing the outputing csv
     
@@ -39,6 +65,13 @@ int main()
 		pofs->close();
 	}
 	
+	
+	
+	return 0;
+}
+
+void ShowNormalSite()
+{
 	hm->html();
 	hm->body();
 	
@@ -100,6 +133,6 @@ int main()
 		cout<<formStr[i];
 	hm->body();
 	hm->html();
-	
-	return 0;
 }
+#endif
+

@@ -4,6 +4,8 @@ runs/*.bat
 run/*.sh
 run/*.bat
 
+*.save
+
 *.sh
 *.bat
 
