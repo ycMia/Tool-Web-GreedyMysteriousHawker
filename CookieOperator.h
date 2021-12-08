@@ -55,7 +55,6 @@ public:
 				{
 					ifs.get(c);
 					cookieStr.push_back(c);
-					// cout<<cookieStr.c_str()<<endl;
 				}
 				
 				_verifyFeature = atoi(cookieStr.c_str());

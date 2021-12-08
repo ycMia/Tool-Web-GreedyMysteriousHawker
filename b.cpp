@@ -1,5 +1,9 @@
 #include <iostream>
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "MethineLoader.h"
 #include "WebPainting.h"
 #include "CsvReader.h"
@@ -23,13 +27,24 @@ int main()
     hm->initPage();
     
     char * cookie = getenv("HTTP_COOKIE");
-    
+    char * poi = cookie;
+
     int cookieStatus = 0;
+    
     if(cookie)
     {
+        int cookieLength = strlen(cookie);
+        string strSession;
+        for(int i = 0; i<cookieLength; i++)
+        {
+            strSession.push_back(*poi++);
+            if(strSession == "session=")
+                strSession.clear();
+        }
+        
         if(co->GetVerifyFeature() != -1)
         {
-            if(atoi(cookie)+co->GetVerifyFeature() == verifySum)
+            if(atoi(strSession.c_str())/*atoi(cookie)*/+co->GetVerifyFeature() == verifySum)
             {
                 //all normal, allow submit data here
                 cookieStatus = 0;
@@ -43,16 +58,6 @@ int main()
         else // I've lost the cookieFile
         {
             cookieStatus = 2;
-            /*
-            cout<<endl<<endl;
-            hm->html();
-            hm->body();
-            cout<<"<!--"<<cookie<<"-->";
-
-            hm->body();
-            hm->html();
-            return 0;
-            */
         }
     }
     else
@@ -60,18 +65,17 @@ int main()
         //the client do NOT have cookie
         cookieStatus = 3;
     }
-
+    
     int seed = (int)time(nullptr) + 15;
     srand(seed);
     int clientSession = (random() % verifySum);
     int serverVerify = verifySum-clientSession;
     cout<<co->GiveClientCookie_str(3600,clientSession);
-    co->SetServerCookie(serverVerify);
-
+    if(cookieStatus!=0) co->SetServerCookie(serverVerify);
+    
     //end of http Head
     cout<<endl<<endl;
-
-
+    
     switch(cookieStatus)
     {
         case 0:
@@ -107,12 +111,17 @@ int main()
             break;
     }
 
+    cout << "<!-- " << cookieStatus << " -->" << endl;
+    cout << "<!-- " << cookie << " -->" << endl;
+    cout << "<!-- " << co->GetVerifyFeature() << " -->" << endl;
+    
     hm->html();
 	hm->body();
-	
+    
+    
+
 	//TODO: this should be a class doing the table calculating
-	tsp->table();
-	
+    tsp->table();
     {
 		bool * trFlag = new bool;
 		*trFlag = true;
@@ -153,6 +162,17 @@ int main()
 			}
 			/*
 			cout<<setw(32)<<right
+				if(res.first.size() == 0)
+					cout<<"&nbsp;";
+				else
+					cout<<res.first;
+				tsp->td();
+				tsp->tr();
+				*trFlag = true;
+				continue;
+			}
+			/*
+			cout<<setw(32)<<right
 				<<(res.first.size() == 0 ? "<<EMPTY>>" : res.first.c_str()) 
 				<<" -- ";
 			cout<<setw(32)<<left
@@ -163,12 +183,14 @@ int main()
 	}
 	tsp->table();
 	
-	string formStr = ml->GetAmmo();
-	for(int i=0;i<formStr.size();i++)
-		cout<<formStr[i];
-	hm->body();
-	hm->html();
-
+	if(cookieStatus!=0)
+    {
+        string formStr = ml->GetAmmo();
+        for(int i=0;i<formStr.size();i++)
+            cout<<formStr[i];
+        hm->body();
+        hm->html();
+    }
 
 	return 0;
 }
@@ -281,14 +303,12 @@ void ShowNormalSite()
 			*/
 		}
 		delete trFlag;
-	}
-	tsp->table();
-	
-	string formStr = ml->GetAmmo();
-	for(int i=0;i<formStr.size();i++)
-		cout<<formStr[i];
-	hm->body();
-	hm->html();
+    }
+    tsp->table();
+    hm-> body();
+    hm-> html();
 }
 #endif
+
+
 
