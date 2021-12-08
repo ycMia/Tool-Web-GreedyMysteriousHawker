@@ -75,6 +75,11 @@ public:
 	{
 		return _milkCansStorage[flavor.c_str()];
 	}
+
+    int AskForSize()
+    {
+        return _milkCansStorage.size();
+    }
 	
 	void Show_map(map<string,string> mp)
 	{

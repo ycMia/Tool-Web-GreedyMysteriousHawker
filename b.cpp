@@ -23,6 +23,8 @@ int main()
     Html_Machine * hm = new Html_Machine();
 	CookieOperator * co = new CookieOperator();
     GMTTimer * gt = new GMTTimer();
+     
+    MilkCar * mc = new MilkCar();
 
     hm->initPage();
     
@@ -70,7 +72,7 @@ int main()
     srand(seed);
     int clientSession = (random() % verifySum);
     int serverVerify = verifySum-clientSession;
-    cout<<co->GiveClientCookie_str(3600,clientSession);
+    cout<<co->GiveClientCookie_str(15,clientSession);
     if(cookieStatus!=0) co->SetServerCookie(serverVerify);
     
     //end of http Head
@@ -82,11 +84,10 @@ int main()
         {
             // accept post data
             cout<<"<!--"<<endl;
-            MilkCar * mc = new MilkCar();
             mc->Show_map(mc->Milk_POST());
             cout<<"-->"<<endl;
             
-            if(mc->AskForDrink("in")!="" || mc->AskForDrink("out")!="")
+            if(mc->AskForSize()!=0 && (mc->AskForDrink("in")!="" || mc->AskForDrink("out")!=""))
             {
                 ofstream * pofs = new ofstream;
                 pofs->open("default.csv",ios::out | ios::app);
@@ -100,7 +101,7 @@ int main()
                     *pofs<<atoi(mc->AskForDrink("out").c_str())<<","<<","<<mc->AskForDrink("comment")<<endl;
                 }
                 pofs->close();
-            }
+            } 
             // show normal Site then
             break;
         }
@@ -112,7 +113,10 @@ int main()
     }
 
     cout << "<!-- " << cookieStatus << " -->" << endl;
-    cout << "<!-- " << cookie << " -->" << endl;
+    if(cookie)
+        cout << "<!-- " << cookie << " -->" << endl;
+    else
+        cout << "<!-- No Cookie -->" << endl;
     cout << "<!-- " << co->GetVerifyFeature() << " -->" << endl;
     
     hm->html();
@@ -160,30 +164,13 @@ int main()
 				*trFlag = true;
 				continue;
 			}
-			/*
-			cout<<setw(32)<<right
-				if(res.first.size() == 0)
-					cout<<"&nbsp;";
-				else
-					cout<<res.first;
-				tsp->td();
-				tsp->tr();
-				*trFlag = true;
-				continue;
-			}
-			/*
-			cout<<setw(32)<<right
-				<<(res.first.size() == 0 ? "<<EMPTY>>" : res.first.c_str()) 
-				<<" -- ";
-			cout<<setw(32)<<left
-				<<(res.second==1 ? "Normal" : "Line\'s End")<<endl;
-			*/
+		
 		}
 		delete trFlag;
 	}
 	tsp->table();
 	
-	if(cookieStatus!=0)
+	if(mc->AskForSize()==0 || cookieStatus!=0)
     {
         string formStr = ml->GetAmmo();
         for(int i=0;i<formStr.size();i++)

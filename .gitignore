@@ -13,7 +13,8 @@ test/
 
 *.csv
 
+*.swp
+*.swo
+
 *.exe
 *.o
-
-*.swp
